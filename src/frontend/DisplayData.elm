@@ -68,7 +68,7 @@ view model =
                 [ tr []
                     [ th []
                         [ text
-                            (if model.dimensionName != "" then
+                            (if model.dimensionName /= "" then
                                 model.dimensionName
                              else
                                 "Column name"
