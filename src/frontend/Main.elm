@@ -1,9 +1,10 @@
 module Main exposing (..)
 
-import Html exposing (Html, h1, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html, h1, div, pre, text)
+import Html.Attributes exposing (hidden)
 import ChooseDimension
 import DisplayData
+import GetData
 
 
 main =
@@ -23,6 +24,7 @@ type alias Model =
     { appName : String
     , dimension : ChooseDimension.Model
     , data : DisplayData.Model
+    , error : Maybe String
     }
 
 
@@ -31,6 +33,7 @@ initialModel =
     { appName = "US census"
     , dimension = ChooseDimension.initialModel
     , data = DisplayData.initialModel
+    , error = Nothing
     }
 
 
@@ -41,6 +44,8 @@ initialModel =
 type Msg
     = ChooseDimensionMsg ChooseDimension.Msg
     | DataMsg DisplayData.Msg
+    | ReceiveData (List DisplayData.Value)
+    | Error String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,19 +57,32 @@ update msg model =
                     ChooseDimension.update msg model.dimension
 
                 updated =
-                    { model | dimension = newDimension }
+                    { model | dimension = newDimension, error = Nothing }
             in
                 case msg of
                     ChooseDimension.Choose name ->
-                        update
-                            (DataMsg (DisplayData.SetDimension name))
-                            updated
+                        let
+                            ( modelWithData, oldCmd ) =
+                                update (DataMsg (DisplayData.SetDimension name)) updated
+                        in
+                            modelWithData ! [ GetData.get ReceiveData Error name, oldCmd ]
 
                     _ ->
                         updated ! []
 
         DataMsg msg ->
             { model | data = DisplayData.update msg model.data } ! []
+
+        ReceiveData values ->
+            let
+                data =
+                    DisplayData.update (DisplayData.SetValues values) model.data
+            in
+                { model | data = data } ! []
+
+        Error err ->
+            -- TODO
+            { model | error = Just err } ! []
 
 
 
@@ -75,6 +93,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ text model.appName ]
+        , pre [ hidden (model.error == Nothing) ] [ text <| Maybe.withDefault "" model.error ]
         , Html.map ChooseDimensionMsg (ChooseDimension.view model.dimension)
         , Html.map DataMsg (DisplayData.view model.data)
         ]
