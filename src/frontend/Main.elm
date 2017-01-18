@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, h1, div, text)
 import Html.Events exposing (onClick)
+import ChooseDimension
 
 
 main =
@@ -17,27 +18,29 @@ main =
 
 
 type alias Model =
-    { appName : String }
+    { appName : String
+    , dimension : ChooseDimension.Model
+    }
 
 
 model : Model
 model =
-    { appName = "US census" }
+    { appName = "US census", dimension = ChooseDimension.initialModel }
 
 
 
 -- UPDATE
 
 
-type alias Msg =
-    ()
+type Msg
+    = ChooseDimensionMsg ChooseDimension.Msg
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        () ->
-            model
+        ChooseDimensionMsg msg ->
+            { model | dimension = ChooseDimension.update msg model.dimension }
 
 
 
@@ -47,4 +50,6 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text model.appName ] ]
+        [ h1 [] [ text model.appName ]
+        , Html.map ChooseDimensionMsg (ChooseDimension.view model.dimension)
+        ]
