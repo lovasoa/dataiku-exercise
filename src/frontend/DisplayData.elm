@@ -34,7 +34,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { dimensionName = "Column value", values = [] }
+    { dimensionName = "", values = [] }
 
 
 
@@ -66,7 +66,14 @@ view model =
         [ table []
             [ thead []
                 [ tr []
-                    [ th [] [ text model.dimensionName ]
+                    [ th []
+                        [ text
+                            (if model.dimensionName != "" then
+                                model.dimensionName
+                             else
+                                "Column name"
+                            )
+                        ]
                     , th [] [ text "number of samples" ]
                     , th [] [ text "mean age" ]
                     ]
