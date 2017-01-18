@@ -1,4 +1,4 @@
-module ChooseDimension exposing (Model, initialModel, Msg, update, view)
+module ChooseDimension exposing (Model, initialModel, Msg(Choose, SetList), update, view)
 
 import Html exposing (Html, label, input, div, text)
 import Html.Attributes exposing (..)
@@ -32,7 +32,7 @@ initialModel =
 
 type Msg
     = Choose String
-    | None
+    | SetList (List String)
 
 
 update : Msg -> Model -> Model
@@ -41,8 +41,8 @@ update msg model =
         Choose choosen ->
             { model | choosen = choosen }
 
-        None ->
-            model
+        SetList list ->
+            { model | possible = list }
 
 
 
