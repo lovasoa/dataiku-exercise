@@ -8,7 +8,19 @@ module DisplayData
         , view
         )
 
-import Html exposing (Html, div, text, table, thead, tbody, tr, td, th)
+import Html
+    exposing
+        ( Html
+        , div
+        , text
+        , strong
+        , table
+        , thead
+        , tbody
+        , tr
+        , td
+        , th
+        )
 import Html.Attributes exposing (..)
 
 
@@ -80,6 +92,11 @@ view model =
                 ]
             , tbody []
                 (List.map viewValue model.values)
+            ]
+        , div []
+            [ strong []
+                [ model.values |> List.length |> toString |> text ]
+            , text " results."
             ]
         ]
 
