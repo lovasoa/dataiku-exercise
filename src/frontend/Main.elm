@@ -46,7 +46,16 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         ChooseDimensionMsg msg ->
-            { model | dimension = ChooseDimension.update msg model.dimension }
+            let
+                updated =
+                    { model | dimension = ChooseDimension.update msg model.dimension }
+            in
+                case msg of
+                    ChooseDimension.Choose name ->
+                        update (DataMsg (DisplayData.SetDimension name)) updated
+
+                    _ ->
+                        updated
 
         DataMsg msg ->
             { model | data = DisplayData.update msg model.data }
