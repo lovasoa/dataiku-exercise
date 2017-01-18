@@ -7,10 +7,11 @@ import DisplayData
 
 
 main =
-    Html.beginnerProgram
-        { model = model
+    Html.program
+        { init = initialModel ! []
         , view = view
         , update = update
+        , subscriptions = subscriptions
         }
 
 
@@ -25,8 +26,8 @@ type alias Model =
     }
 
 
-model : Model
-model =
+initialModel : Model
+initialModel =
     { appName = "US census"
     , dimension = ChooseDimension.initialModel
     , data = DisplayData.initialModel
@@ -42,23 +43,28 @@ type Msg
     | DataMsg DisplayData.Msg
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChooseDimensionMsg msg ->
             let
+                newDimension =
+                    ChooseDimension.update msg model.dimension
+
                 updated =
-                    { model | dimension = ChooseDimension.update msg model.dimension }
+                    { model | dimension = newDimension }
             in
                 case msg of
                     ChooseDimension.Choose name ->
-                        update (DataMsg (DisplayData.SetDimension name)) updated
+                        update
+                            (DataMsg (DisplayData.SetDimension name))
+                            updated
 
                     _ ->
-                        updated
+                        updated ! []
 
         DataMsg msg ->
-            { model | data = DisplayData.update msg model.data }
+            { model | data = DisplayData.update msg model.data } ! []
 
 
 
@@ -72,3 +78,12 @@ view model =
         , Html.map ChooseDimensionMsg (ChooseDimension.view model.dimension)
         , Html.map DataMsg (DisplayData.view model.data)
         ]
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
