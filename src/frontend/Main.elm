@@ -60,6 +60,9 @@ update msg model =
                     { model | dimension = newDimension, error = Nothing }
             in
                 case msg of
+                    ChooseDimension.Choose "" ->
+                        updated ! []
+
                     ChooseDimension.Choose name ->
                         let
                             ( modelWithData, oldCmd ) =
