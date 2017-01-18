@@ -4,7 +4,8 @@ This is a small single-page web app to visualize US census data
 
 ## Technological stack
 
- * Frontend
+#### Frontend
    * Elm
- * Backend
+
+#### Backend
    * CouchDB 
