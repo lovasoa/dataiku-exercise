@@ -1,12 +1,12 @@
 module GetData exposing (get)
 
 import Http
-import DisplayData exposing (Value)
+import DisplayData exposing (Model, Value)
 import Json.Decode as Decode
 
 
 base =
-    "../backend/"
+    "../backend/sample-data/"
 
 
 type alias Error =
