@@ -44,7 +44,7 @@ initialModel =
 type Msg
     = ChooseDimensionMsg ChooseDimension.Msg
     | DataMsg DisplayData.Msg
-    | ReceiveData (List DisplayData.Value)
+    | ReceiveData DisplayData.Model
     | Error String
 
 
@@ -76,12 +76,8 @@ update msg model =
         DataMsg msg ->
             { model | data = DisplayData.update msg model.data } ! []
 
-        ReceiveData values ->
-            let
-                data =
-                    DisplayData.update (DisplayData.SetValues values) model.data
-            in
-                { model | data = data } ! []
+        ReceiveData data ->
+            { model | data = data } ! []
 
         Error err ->
             -- TODO

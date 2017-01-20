@@ -2,5 +2,6 @@
   "data": [
     {"age": 26.987835673, "samples": 1234, "value": "Good"},
     {"age": 61.9763, "samples": 234, "value": "Bad"}
-  ]
+  ],
+  "column" : "Good & Bad"
 }

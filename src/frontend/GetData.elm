@@ -17,7 +17,7 @@ type alias Error =
 -- Request a list of values to the server
 
 
-get : (List Value -> msg) -> (String -> msg) -> String -> Cmd msg
+get : (Model -> msg) -> (String -> msg) -> String -> Cmd msg
 get success fail name =
     let
         url =
@@ -30,23 +30,25 @@ get success fail name =
 -- handle the HTTP result
 
 
-handleResult : (List Value -> msg) -> (String -> msg) -> Result Http.Error (List Value) -> msg
+handleResult : (Model -> msg) -> (String -> msg) -> Result Http.Error Model -> msg
 handleResult success fail result =
     case result of
         Err e ->
             fail <| toString e
 
-        Ok values ->
-            success values
+        Ok model ->
+            success model
 
 
 
 -- JSON decoders
 
 
-decodeData : Decode.Decoder (List Value)
+decodeData : Decode.Decoder Model
 decodeData =
-    Decode.at [ "data" ] (Decode.list decodeValue)
+    Decode.map2 Model
+        (Decode.field "column" Decode.string)
+        (Decode.field "data" (Decode.list decodeValue))
 
 
 decodeValue : Decode.Decoder Value
