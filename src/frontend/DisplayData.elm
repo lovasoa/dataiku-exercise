@@ -87,7 +87,7 @@ view model =
                             )
                         ]
                     , th [] [ text "number of samples" ]
-                    , th [] [ text "mean age" ]
+                    , th [] [ text "average age" ]
                     ]
                 ]
             , tbody []
