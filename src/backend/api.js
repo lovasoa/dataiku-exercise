@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 const DB_FILE = '/census.db';
 const STATIC_DIR = path.resolve(__dirname + '/../frontend/static')
 
+console.log(`Launching application on port ${PORT}...`);
 sqlite.open(__dirname + DB_FILE)
       .then(() => app.listen(PORT))
       .catch((e) => console.error(e));
