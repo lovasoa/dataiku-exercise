@@ -29,7 +29,7 @@ The original database file schema was quite
 inefficient for the kind of queries we have to do.
 
 A python script is provided (`src/backend/import-db.py`)
-that takes an database in the old format, and
+that takes a database in the old format, and
 generates a new optimized database in
 `src/backend/census.db`
 
