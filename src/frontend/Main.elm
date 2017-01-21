@@ -1,4 +1,4 @@
-module Main exposing (..)
+module VisualizeCensus exposing (..)
 
 {-|
 # US census visualization web application
@@ -35,7 +35,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    { appName = "US census"
+    { appName = "VisualizeCensus"
     , dimension = ChooseDimension.initialModel
     , data = DisplayData.initialModel
     , error = Nothing
