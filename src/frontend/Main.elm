@@ -1,5 +1,9 @@
 module Main exposing (..)
 
+{-|
+# US census visualization web application
+-}
+
 import Html exposing (Html, h1, div, pre, text)
 import Html.Attributes exposing (hidden)
 import ChooseDimension

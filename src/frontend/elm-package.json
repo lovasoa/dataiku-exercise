@@ -3,9 +3,7 @@
     "summary": "Visualize census data",
     "repository": "https://github.com/lovasoa/us-census-visualization.git",
     "license": "BSD3",
-    "source-directories": [
-        "src/frontend"
-    ],
+    "source-directories": ["."],
     "exposed-modules": [],
     "dependencies": {
         "elm-lang/core": "5.0.0 <= v < 6.0.0",

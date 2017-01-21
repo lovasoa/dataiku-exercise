@@ -6,7 +6,7 @@ import Json.Decode as Decode
 
 
 base =
-    "../backend/sample-data/"
+    "/api/"
 
 
 type alias Error =

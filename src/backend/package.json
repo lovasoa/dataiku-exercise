@@ -4,6 +4,7 @@
   "description": "Backend server of the census visualisation application",
   "main": "api.js",
   "scripts": {
+    "prestart": "cd ../frontend && elm-make --yes Main.elm  --output static/compiled-application.html",
     "start": "node api.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
