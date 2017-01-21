@@ -4,3 +4,4 @@ elm-stuff
 repl-temp-*
 # node packages
 node_modules
+/src/backend/census.db
