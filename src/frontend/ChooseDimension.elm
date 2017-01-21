@@ -1,6 +1,6 @@
 module ChooseDimension exposing (Model, initialModel, Msg(Choose, SetList), update, view)
 
-import Html exposing (Html, label, input, div, text)
+import Html exposing (Html, label, select, option, div, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 
@@ -53,5 +53,10 @@ view : Model -> Html Msg
 view model =
     label []
         [ text "Choose the data you want to analyze"
-        , input [ value model.choosen, onInput Choose ] []
+        , select [ onInput Choose ] (List.map viewOption model.possible)
         ]
+
+
+viewOption : String -> Html Msg
+viewOption value =
+    option [] [ text value ]

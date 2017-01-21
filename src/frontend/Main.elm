@@ -7,13 +7,14 @@ module Main exposing (..)
 import Html exposing (Html, h1, div, pre, text)
 import Html.Attributes exposing (hidden)
 import ChooseDimension
+import GetDimensions
 import DisplayData
 import GetData
 
 
 main =
     Html.program
-        { init = initialModel ! []
+        { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -32,13 +33,14 @@ type alias Model =
     }
 
 
-initialModel : Model
-initialModel =
+init : ( Model, Cmd Msg )
+init =
     { appName = "US census"
     , dimension = ChooseDimension.initialModel
     , data = DisplayData.initialModel
     , error = Nothing
     }
+        ! [ GetDimensions.get ReceiveDimensions Error ]
 
 
 
@@ -49,6 +51,7 @@ type Msg
     = ChooseDimensionMsg ChooseDimension.Msg
     | DataMsg DisplayData.Msg
     | ReceiveData DisplayData.Model
+    | ReceiveDimensions ChooseDimension.Model
     | Error String
 
 
@@ -82,6 +85,9 @@ update msg model =
 
         ReceiveData data ->
             { model | data = data } ! []
+
+        ReceiveDimensions dimension ->
+            { model | dimension = dimension } ! []
 
         Error err ->
             -- TODO
