@@ -17,20 +17,26 @@ app.get('/', (req, res) => res.sendFile(STATIC_DIR + '/compiled-application.html
 app.use('/static', express.static(STATIC_DIR));
 
 // Serve our api on /api
-const column = express().get('/data/:column', function(req, res){
+const data = express().get('/data/:column', function(req, res){
   const SQL_SELECT = `
     SELECT
-      AVG(age) AS age, COUNT(*) AS samples, value
+      AVG(census.age) AS age, COUNT(*) AS samples, census.value
     FROM census
-    WHERE column = ?
-    GROUP BY value
+    INNER JOIN columns ON census.column = columns.id
+    WHERE columns.name = ?
+    GROUP BY census.value
+    ORDER BY samples DESC
     LIMIT 100
   `;
-  sqlite.all(SQL_SELECT, [req.params.column]).then((results) =>
-    res.json({
-      data: results,
-      column: req.params.column,
-    })
+  sqlite.all(SQL_SELECT, [req.params.column]).then((data) =>
+    res.json({data, column: req.params.column})
   ).catch((err) => res.status(500).json({'error': err}));
 });
-app.use('/api', column);
+const columns = express().get('/columns', function(req, res){
+  const SQL_SELECT = `SELECT * FROM columns`;
+  sqlite.all(SQL_SELECT, [req.params.column]).then((data) =>
+    res.json({data})
+  ).catch((err) => res.status(500).json({'error': err}));
+});
+app.use('/api', data);
+app.use('/api', columns);

@@ -19,40 +19,57 @@ new_db = sqlite3.connect(NEW_DB_FILE).cursor()
 # Create our data table
 print("Creating new database schema...", file=sys.stderr)
 new_db.executescript("""
+    DROP TABLE IF EXISTS columns;
+    CREATE TABLE columns (
+        id INTEGER PRIMARY KEY,
+        name TEXT UNIQUE ON CONFLICT REPLACE
+    );
     DROP TABLE IF EXISTS census;
     CREATE TABLE
-      census (column TEXT, value TEXT NOT NULL, id INTEGER, age FLOAT NOT NULL,
-            PRIMARY KEY (column, id));
+      census (
+        column INTEGER REFERENCES columns(id),
+        value TEXT NOT NULL,
+        id INTEGER NOT NULL,
+        age FLOAT NOT NULL,
+        PRIMARY KEY (column, id)
+    );
 """)
 
-def fetch_data():
-    """Returns an iterator over the data in the old db"""
-    print("Starting row import. Go grab a coffee, it can take a few minutes.", file=sys.stderr)
-    old_db.connection.row_factory = sqlite3.Row
-    SQL_IMPORT = """
-        SELECT rowid, *
-        FROM census_learn_sql
-        WHERE age IS NOT NULL
-    """
-    i = 0
-    for row in old_db.connection.execute(SQL_IMPORT):
-        for (column, value) in zip(row.keys(), row):
-            if column not in ("rowid", "age") and value != None:
-                yield (column, value, row["rowid"], row["age"])
+def column_id(name):
+    "Returns the id of a column given its name. Creates the column if necessary"
+    res = new_db.execute("SELECT id FROM columns WHERE name = ?", (name,))
+    id = res.fetchone()
+    if id == None:
+        new_db.execute("INSERT INTO columns (name) VALUES (?)", (name,))
+        id = (new_db.lastrowid,)
+    return id[0]
 
-        print("Imported %6d rows...\r" % (i,), end='', file=sys.stderr)
-        i = i+1
-    print("\nImported all rows.", file=sys.stderr)
-
-SQL_INSERT = """
-    INSERT INTO
-        census (column,value,id,age)
-    VALUES
-             (?,?,?,?)
-"""
 # Inport the data in the new DB
-new_db.executemany(SQL_INSERT, fetch_data())
+print("Starting row import. Go grab a coffee, it can take a few minutes.", file=sys.stderr)
+old_db.connection.row_factory = sqlite3.Row
+SQL_IMPORT = """
+    SELECT rowid, *
+    FROM census_learn_sql
+    WHERE age IS NOT NULL
+"""
+i = 0
+for row in old_db.connection.execute(SQL_IMPORT):
+    for (column, value) in zip(row.keys(), row):
+        if column not in ("rowid", "age") and value != None:
+            params = (column_id(column), value, row["rowid"], row["age"])
+            SQL_INSERT = """
+                INSERT INTO
+                    census (column,value,id,age)
+                VALUES
+                         (?,?,?,?)
+            """
+            new_db.execute(SQL_INSERT, params)
+
+    print("Imported %6d rows...\r" % (i,), end='', file=sys.stderr)
+    i = i+1
+print("\nImported all rows.", file=sys.stderr)
 new_db.connection.commit()
+
 # Create our index and clean the db
 print("Creating an index...", file=sys.stderr)
 new_db.executescript("""
