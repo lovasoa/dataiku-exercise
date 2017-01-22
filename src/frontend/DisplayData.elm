@@ -8,26 +8,14 @@ module DisplayData
         , view
         )
 
-import Html
-    exposing
-        ( Html
-        , div
-        , text
-        , strong
-        , table
-        , thead
-        , tbody
-        , tfoot
-        , tr
-        , td
-        , th
-        )
+import Html exposing (Html, div, text)
 import Html.Attributes exposing (..)
+import Table
 
 
 main =
     Html.beginnerProgram
-        { model = initialModel
+        { model = testModel
         , view = view
         , update = update
         }
@@ -42,12 +30,39 @@ type alias Value =
 
 
 type alias Model =
-    { dimensionName : String, values : List Value }
+    { dimensionName : Maybe String
+    , values : List Value
+    , tableState : Table.State
+    }
 
 
 initialModel : Model
 initialModel =
-    { dimensionName = "", values = [] }
+    { dimensionName = Nothing
+    , values = []
+    , tableState = Table.initialSort "number of samples"
+    }
+
+
+testModel : Model
+testModel =
+    { initialModel
+        | dimensionName = Just "variable"
+        , values = [ Value 12 123 "hello" ]
+    }
+
+
+tableConfig : String -> Table.Config Value Msg
+tableConfig dimensionName =
+    Table.config
+        { toId = .value
+        , toMsg = SetTableState
+        , columns =
+            [ Table.stringColumn dimensionName .value
+            , Table.intColumn "number of samples" .samples
+            , Table.floatColumn "average age" .age
+            ]
+        }
 
 
 
@@ -56,17 +71,21 @@ initialModel =
 
 type Msg
     = SetDimension String
-    | SetValues (List Value)
+    | SetValues String (List Value)
+    | SetTableState Table.State
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
         SetDimension name ->
-            { model | dimensionName = name }
+            { model | dimensionName = Just name }
 
-        SetValues values ->
-            { model | values = values }
+        SetValues name values ->
+            { model | values = values, dimensionName = Just name }
+
+        SetTableState state ->
+            { model | tableState = state }
 
 
 
@@ -75,40 +94,14 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    table []
-        [ thead []
-            [ tr []
-                [ th []
-                    [ text
-                        (if model.dimensionName /= "" then
-                            model.dimensionName
-                         else
-                            "Column name"
-                        )
-                    ]
-                , th [] [ text "number of samples" ]
-                , th [] [ text "average age" ]
-                ]
-            ]
-        , tbody [] (List.map viewValue model.values)
-        , tfoot []
-            [ tr []
-                (if model.dimensionName == "" then
-                    [ text "Nothing selected" ]
-                 else
-                    [ strong []
-                        [ model.values |> List.length |> toString |> text ]
-                    , text " results."
-                    ]
-                )
-            ]
-        ]
+    div [ class "results" ]
+        [ case model.dimensionName of
+            Nothing ->
+                text "Nothing selected"
 
-
-viewValue : Value -> Html Msg
-viewValue v =
-    tr [ title v.value ]
-        [ td [] [ text v.value ]
-        , td [] [ text <| toString v.samples ]
-        , td [ title <| toString v.age ] [ text <| toString <| round v.age ]
+            Just name ->
+                Table.view
+                    (tableConfig name)
+                    model.tableState
+                    model.values
         ]

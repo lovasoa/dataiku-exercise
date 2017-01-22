@@ -50,7 +50,6 @@ init =
 type Msg
     = ChooseDimensionMsg ChooseDimension.Msg
     | DataMsg DisplayData.Msg
-    | ReceiveData DisplayData.Model
     | ReceiveDimensions ChooseDimension.Model
     | Error String
 
@@ -65,16 +64,13 @@ update msg model =
             }
                 ! case msg of
                     ChooseDimension.Choose (Just { id, value }) ->
-                        [ GetData.get ReceiveData Error id ]
+                        [ GetData.get DataMsg Error id ]
 
                     _ ->
                         []
 
         DataMsg msg ->
             { model | data = DisplayData.update msg model.data } ! []
-
-        ReceiveData data ->
-            { model | data = data } ! []
 
         ReceiveDimensions dimension ->
             { model | dimension = dimension } ! []

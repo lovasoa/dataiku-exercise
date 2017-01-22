@@ -1,7 +1,7 @@
 module GetData exposing (get)
 
 import Http
-import DisplayData exposing (Model, Value)
+import DisplayData exposing (Msg, Value)
 import Json.Decode as Decode
 
 
@@ -17,7 +17,7 @@ type alias Error =
 -- Request a list of values to the server
 
 
-get : (Model -> msg) -> (String -> msg) -> Int -> Cmd msg
+get : (Msg -> msg) -> (String -> msg) -> Int -> Cmd msg
 get success fail id =
     let
         url =
@@ -30,7 +30,7 @@ get success fail id =
 -- handle the HTTP result
 
 
-handleResult : (Model -> msg) -> (String -> msg) -> Result Http.Error Model -> msg
+handleResult : (Msg -> msg) -> (String -> msg) -> Result Error Msg -> msg
 handleResult success fail result =
     case result of
         Err e ->
@@ -44,9 +44,9 @@ handleResult success fail result =
 -- JSON decoders
 
 
-decodeData : Decode.Decoder Model
+decodeData : Decode.Decoder Msg
 decodeData =
-    Decode.map2 Model
+    Decode.map2 DisplayData.SetValues
         (Decode.field "column" Decode.string)
         (Decode.field "data" (Decode.list decodeValue))
 
