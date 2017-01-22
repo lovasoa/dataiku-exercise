@@ -53,10 +53,11 @@ view : Model -> Html Msg
 view model =
     label []
         [ text "Choose a variable to analyze: "
-        , select [ onInput Choose ] (List.map viewOption model.possible)
+        , select [ onInput Choose ] (viewOptions model.possible)
         ]
 
 
-viewOption : String -> Html Msg
-viewOption value =
-    option [] [ text value ]
+viewOptions : List String -> List (Html Msg)
+viewOptions values =
+    (option [ disabled True, selected True ] [ text "-- Select a value --" ])
+        :: (List.map (\v -> option [] [ text v ]) values)
