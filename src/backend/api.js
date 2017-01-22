@@ -1,12 +1,20 @@
 'use strict';
 const express = require('express');
 const sqlite = require('sqlite');
-const path = require('path')
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_FILE = '/census.db';
-const STATIC_DIR = path.resolve(__dirname + '/../frontend/static')
+const STATIC_DIR = path.resolve(__dirname + '/../frontend/static');
+
+// Reading sql files, create a map of SQL filenames and their contents
+const SQL_DIR = './sql/';
+const SQL_FILES =
+  fs.readdirSync(SQL_DIR)
+    .map(file => [file, fs.readFileSync(path.join(SQL_DIR,file), 'utf8')])
+    .reduce((map, [key, value]) => map.set(key, value), new Map())
 
 console.log(`Launching application on port ${PORT}...`);
 sqlite.open(__dirname + DB_FILE)
@@ -19,42 +27,20 @@ app.use('/static', express.static(STATIC_DIR));
 
 // Serve our api on /api
 const data = express().get('/data/:column', function(req, res){
-  const SQL_VALUES = `
-    WITH results AS (
-      SELECT
-        AVG(census.age) AS age, COUNT(*) AS samples, census.value AS value
-      FROM census
-      WHERE census.column = ?
-      GROUP BY census.value
-      ORDER BY samples DESC
-    )
-      SELECT s1.* FROM (SELECT * FROM results LIMIT 100) AS s1
-    UNION ALL
-      SELECT * FROM (
-          SELECT
-          AVG(others.age) AS age,
-          SUM(others.samples) AS samples,
-          ('Other (' || COUNT(others.value) || 'distinct values)') AS value
-          FROM (SELECT * FROM results LIMIT 100000 OFFSET 100) AS others
-          WHERE others.value IS NOT NULL
-      )
-      WHERE samples IS NOT NULL
-  `;
-  const SQL_NAME = `SELECT name AS column FROM COLUMNS WHERE id = ?`;
+  const column = req.params.column;
   Promise.all(
     [
-      sqlite.all(SQL_VALUES, [req.params.column]),
-      sqlite.get(SQL_NAME, [req.params.column]),
+      sqlite.all(SQL_FILES.get('average_age_by_variable.sql'), [column]),
+      sqlite.get(SQL_FILES.get('column_name.sql'), [column]),
     ]
   ).then(([data, {column}]) =>
     res.json({data, column})
   ).catch((err) => res.status(500).json({'error': err}));
 });
 const columns = express().get('/columns', function(req, res){
-  const SQL_SELECT = `SELECT id, name FROM columns`;
-  sqlite.all(SQL_SELECT, [req.params.column]).then((data) =>
+  sqlite.all(SQL_FILES.get('all_columns.sql')).then((data) =>
     res.json({data})
-  ).catch((err) => res.status(500).json({'error': err}));
+  ).catch((err) => res.status(500).json({error: err}));
 });
 app.use('/api', data);
 app.use('/api', columns);
