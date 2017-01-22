@@ -3,7 +3,13 @@
 This is a small single-page web app to visualize US census data
 
 ## Project status
-The project is currently in a working state, but is still being improved.
+The project is currently in a working state,
+waiting to be reviewed.
+
+## Demo
+
+A demonstration server is running on
+http://visualize-census.eu-2.evennode.com/.
 
 ## Technological stack
 
