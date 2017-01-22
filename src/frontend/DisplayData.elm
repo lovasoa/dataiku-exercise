@@ -107,7 +107,7 @@ view model =
 
 viewValue : Value -> Html Msg
 viewValue v =
-    tr [ title <| toString v.value ]
+    tr [ title v.value ]
         [ td [] [ text v.value ]
         , td [] [ text <| toString v.samples ]
         , td [ title <| toString v.age ] [ text <| toString <| round v.age ]
