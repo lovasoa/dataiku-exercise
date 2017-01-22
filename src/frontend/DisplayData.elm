@@ -48,21 +48,35 @@ testModel : Model
 testModel =
     { initialModel
         | dimensionName = Just "variable"
-        , values = [ Value 12 123 "hello" ]
+        , values = [ Value 0.123 123 "hello", Value 0 1 "world" ]
     }
 
 
 tableConfig : String -> Table.Config Value Msg
 tableConfig dimensionName =
-    Table.config
-        { toId = .value
-        , toMsg = SetTableState
-        , columns =
-            [ Table.stringColumn dimensionName .value
-            , Table.intColumn "number of samples" .samples
-            , Table.floatColumn "average age" .age
-            ]
-        }
+    let
+        dimensionColumn =
+            Table.stringColumn dimensionName .value
+
+        samplesColumn =
+            Table.customColumn
+                { name = "number of samples"
+                , viewData = .samples >> toString
+                , sorter = Table.decreasingOrIncreasingBy .samples
+                }
+
+        ageColumn =
+            Table.customColumn
+                { name = "average age"
+                , viewData = .age >> (\x -> toFloat (round (x * 10)) / 10) >> toString
+                , sorter = Table.increasingOrDecreasingBy .age
+                }
+    in
+        Table.config
+            { toId = .value
+            , toMsg = SetTableState
+            , columns = [ dimensionColumn, samplesColumn, ageColumn ]
+            }
 
 
 
