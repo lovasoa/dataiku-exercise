@@ -9,4 +9,4 @@ npm-debug.log
 # Backend database (it can be regenerated)
 /src/backend/census.db
 # Compiled elm
-/src/frontend/static/compiled-application.html
+compiled.js

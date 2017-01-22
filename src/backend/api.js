@@ -14,7 +14,7 @@ sqlite.open(__dirname + DB_FILE)
       .catch((e) => console.error(e));
 
 // Serve our Elm application on /
-app.get('/', (req, res) => res.sendFile(STATIC_DIR + '/compiled-application.html'));
+app.get('/', (req, res) => res.sendFile(STATIC_DIR + '/index.html'));
 app.use('/static', express.static(STATIC_DIR));
 
 // Serve our api on /api
