@@ -7,12 +7,15 @@ html, body {
 }
 
 h1 {
+  font-family: Palatino;
+  font-size: 2.5em;
   text-align: center;
   margin: 40px auto;
 }
 
 select {
   width: 300px;
+  max-width: 100%;
   background: #7FDBFF;
   color:  #001f3f;
   border: 2px solid  #001f3f;

@@ -35,7 +35,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    { appName = "VisualizeCensus"
+    { appName = "Visualize Census"
     , dimension = ChooseDimension.initialModel
     , data = DisplayData.initialModel
     , error = Nothing
