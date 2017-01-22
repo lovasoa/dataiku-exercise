@@ -17,6 +17,7 @@ import Html
         , table
         , thead
         , tbody
+        , tfoot
         , tr
         , td
         , th
@@ -74,29 +75,32 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ table []
-            [ thead []
-                [ tr []
-                    [ th []
-                        [ text
-                            (if model.dimensionName /= "" then
-                                model.dimensionName
-                             else
-                                "Column name"
-                            )
-                        ]
-                    , th [] [ text "number of samples" ]
-                    , th [] [ text "average age" ]
+    table []
+        [ thead []
+            [ tr []
+                [ th []
+                    [ text
+                        (if model.dimensionName /= "" then
+                            model.dimensionName
+                         else
+                            "Column name"
+                        )
                     ]
+                , th [] [ text "number of samples" ]
+                , th [] [ text "average age" ]
                 ]
-            , tbody []
-                (List.map viewValue model.values)
             ]
-        , div []
-            [ strong []
-                [ model.values |> List.length |> toString |> text ]
-            , text " results."
+        , tbody [] (List.map viewValue model.values)
+        , tfoot []
+            [ tr []
+                (if model.dimensionName == "" then
+                    [ text "Nothing selected" ]
+                 else
+                    [ strong []
+                        [ model.values |> List.length |> toString |> text ]
+                    , text " results."
+                    ]
+                )
             ]
         ]
 

@@ -52,7 +52,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     label []
-        [ text "Choose the data you want to analyze"
+        [ text "Choose a variable to analyze: "
         , select [ onInput Choose ] (List.map viewOption model.possible)
         ]
 
