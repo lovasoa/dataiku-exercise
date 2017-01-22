@@ -37,3 +37,12 @@ thead {
 th:first-child {
   width: 800px;
 }
+
+pre {
+  background:  #85144b;
+  color: #F012BE;
+  padding: 10px;
+  overflow: auto;
+  white-space: pre-wrap;
+  width: 100%;
+}
