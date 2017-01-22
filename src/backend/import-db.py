@@ -32,7 +32,7 @@ new_db.executescript("""
         id INTEGER NOT NULL,
         age FLOAT NOT NULL,
         PRIMARY KEY (column, id)
-    );
+    ) WITHOUT ROWID;
 """)
 
 def column_id(name):
