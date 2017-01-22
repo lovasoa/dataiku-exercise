@@ -5,28 +5,24 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 const DB_FILE = '/census.db';
-const STATIC_DIR = path.resolve(__dirname + '/../frontend/static');
 
-// Reading sql files, create a map of SQL filenames and their contents
+// Read sql files, create a map of SQL filenames and their contents
 const SQL_DIR = './sql/';
 const SQL_FILES =
   fs.readdirSync(SQL_DIR)
     .map(file => [file, fs.readFileSync(path.join(SQL_DIR,file), 'utf8')])
-    .reduce((map, [key, value]) => map.set(key, value), new Map())
+    .reduce((map, [key, value]) => map.set(key, value), new Map());
 
-console.log(`Launching application on port ${PORT}...`);
-sqlite.open(__dirname + DB_FILE)
-      .then(() => app.listen(PORT))
-      .catch((e) => console.error(e));
+// Get the list of available variables
+app.get('/columns', function(req, res) {
+  sqlite.all(SQL_FILES.get('all_columns.sql')).then((data) =>
+    res.json({data})
+  ).catch((err) => res.status(500).json({error: err}));
+});
 
-// Serve our Elm application on /
-app.get('/', (req, res) => res.sendFile(STATIC_DIR + '/index.html'));
-app.use('/static', express.static(STATIC_DIR));
-
-// Serve our api on /api
-const data = express().get('/data/:column', function(req, res){
+// Get the statistics for a variable
+app.get('/data/:column', function(req, res){
   const column = req.params.column;
   Promise.all(
     [
@@ -37,10 +33,7 @@ const data = express().get('/data/:column', function(req, res){
     res.json({data, column})
   ).catch((err) => res.status(500).json({'error': err}));
 });
-const columns = express().get('/columns', function(req, res){
-  sqlite.all(SQL_FILES.get('all_columns.sql')).then((data) =>
-    res.json({data})
-  ).catch((err) => res.status(500).json({error: err}));
-});
-app.use('/api', data);
-app.use('/api', columns);
+
+const promise = sqlite.open(__dirname + DB_FILE);
+
+module.exports = {app, promise};
