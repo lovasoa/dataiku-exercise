@@ -8,5 +8,7 @@ npm-debug.log
 
 # Backend database (it can be regenerated)
 /src/backend/census.db
+# Api documentation
+/src/backend/doc/
 # Compiled elm
 compiled.js

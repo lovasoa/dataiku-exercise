@@ -3,10 +3,19 @@
   "version": "0.0.1",
   "description": "Backend server of the census visualisation application",
   "main": "server.js",
+  "scripts" : {
+    "apidoc": "apidoc -f api.js"
+  },
   "author": "Ophir LOJKINE",
   "license": "UNLICENSED",
   "dependencies": {
     "express": "^4.14.0",
     "sqlite": "^2.2.4"
+  },
+  "devDependencies" : {
+    "apidoc": "^0.17.3"
+  },
+  "apidoc": {
+    "url": "http://localhost:3000/api"
   }
 }
