@@ -8,6 +8,9 @@ The project is currently in a working state, but is still being improved.
 ## Technological stack
 
 #### Frontend
+
+![App screenshot](./exercise/screenshot.png)
+
 The frontend is very simple: it is composed of
 a single page, that allows the user to choose which
 dimension of the data to analyze, then queries the server,
