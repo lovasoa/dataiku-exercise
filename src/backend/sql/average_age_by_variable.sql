@@ -1,7 +1,7 @@
 -- Average age by variable
 -- For a given variable, return
 -- its different values,
--- the number of people have the variable set to this value
+-- the number of people that have the variable set to this value
 -- the average age of these people.
 -- When there are more then 100 results, return the 100 first results, and
 -- a last (101st) result aggregating all the other values
