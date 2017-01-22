@@ -3,10 +3,6 @@
   "version": "0.0.1",
   "description": "Backend server of the census visualisation application",
   "main": "server.js",
-  "scripts": {
-    "prestart": "cd ../frontend && elm-make --yes Main.elm  --output static/compiled.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Ophir LOJKINE",
   "license": "UNLICENSED",
   "dependencies": {

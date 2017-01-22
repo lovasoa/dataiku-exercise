@@ -42,15 +42,20 @@ the same schema.
 ## How to use
 
 #### Dependencies
-Ensure you have elm, node and python installed.
+Ensure you have node (>=6) and python (>=3.5) installed.
 
-#### Create the database file
-```sh
-./src/backend/import-db.py ./exercise/us-census.db
+In a debian-based distribution, you can install them with
+
+```
+$ sudo apt install nodejs python3
 ```
 
 #### Launch the server
+
+A launch script is provided, that creates the optimized database,
+compiles Elm files to javascript, and launches the server.
+Launch is with:
+
 ```
-cd src/backend
 npm start
 ```

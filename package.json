@@ -1,0 +1,13 @@
+{
+  "name": "visualize-census",
+  "version": "0.0.1",
+  "description": "US census visualisation application",
+  "scripts": {
+    "start": "./start.sh"
+  },
+  "author": "Ophir LOJKINE",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "elm": "0.18.x"
+  }
+}
