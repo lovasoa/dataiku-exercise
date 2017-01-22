@@ -23,8 +23,7 @@ const data = express().get('/data/:column', function(req, res){
     SELECT
       AVG(census.age) AS age, COUNT(*) AS samples, census.value
     FROM census
-    INNER JOIN columns ON census.column = columns.id
-    WHERE columns.name = ?
+    WHERE census.column = ?
     GROUP BY census.value
     ORDER BY samples DESC
     LIMIT 100

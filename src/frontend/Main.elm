@@ -59,26 +59,16 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChooseDimensionMsg msg ->
-            let
-                newDimension =
-                    ChooseDimension.update msg model.dimension
-
-                updated =
-                    { model | dimension = newDimension, error = Nothing }
-            in
-                case msg of
-                    ChooseDimension.Choose "" ->
-                        updated ! []
-
-                    ChooseDimension.Choose name ->
-                        let
-                            ( modelWithData, oldCmd ) =
-                                update (DataMsg (DisplayData.SetDimension name)) updated
-                        in
-                            modelWithData ! [ GetData.get ReceiveData Error name, oldCmd ]
+            { model
+                | dimension = ChooseDimension.update msg model.dimension
+                , error = Nothing
+            }
+                ! case msg of
+                    ChooseDimension.Choose (Just { id, value }) ->
+                        [ GetData.get ReceiveData Error id ]
 
                     _ ->
-                        updated ! []
+                        []
 
         DataMsg msg ->
             { model | data = DisplayData.update msg model.data } ! []

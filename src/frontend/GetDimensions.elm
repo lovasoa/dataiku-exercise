@@ -1,7 +1,7 @@
 module GetDimensions exposing (get)
 
 import Http
-import ChooseDimension exposing (Model)
+import ChooseDimension exposing (Model, Values, Value)
 import Json.Decode as Decode
 
 
@@ -43,10 +43,12 @@ handleResult success fail result =
 decodeData : Decode.Decoder Model
 decodeData =
     Decode.map2 Model
-        (Decode.succeed "")
+        (Decode.succeed Nothing)
         (Decode.field "data" (Decode.list decodeColumn))
 
 
-decodeColumn : Decode.Decoder String
+decodeColumn : Decode.Decoder Value
 decodeColumn =
-    Decode.field "name" Decode.string
+    Decode.map2 Value
+        (Decode.field "id" Decode.int)
+        (Decode.field "name" Decode.string)

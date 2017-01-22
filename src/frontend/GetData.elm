@@ -17,11 +17,11 @@ type alias Error =
 -- Request a list of values to the server
 
 
-get : (Model -> msg) -> (String -> msg) -> String -> Cmd msg
-get success fail name =
+get : (Model -> msg) -> (String -> msg) -> Int -> Cmd msg
+get success fail id =
     let
         url =
-            base ++ "data/" ++ (Http.encodeUri name)
+            base ++ "data/" ++ (Http.encodeUri (toString id))
     in
         Http.send (handleResult success fail) (Http.get url decodeData)
 
