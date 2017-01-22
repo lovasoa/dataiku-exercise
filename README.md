@@ -34,10 +34,10 @@ generates a new optimized database in
 `src/backend/census.db`
 
 For the sake of simplicity,
-the new database uses [SQLite](http://sqlite.org/)
-too. However, it wouldn't be difficult to migrate
-to another RDMS as the data volume grows, while keeping
-the same schema.
+the new database uses [SQLite](http://sqlite.org/) too.
+Performance in a single user context is currently very good.
+However, migrating to another RDMS
+might be wanted as the data volume grows.
 
 ## How to use
 
@@ -47,7 +47,7 @@ Ensure you have node (>=6) and python (>=3.5) installed.
 In a debian-based distribution, you can install them with
 
 ```
-$ sudo apt install nodejs python3
+sudo apt install nodejs python3
 ```
 
 #### Launch the server
