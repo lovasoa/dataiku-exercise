@@ -40,9 +40,14 @@ const data = express().get('/data/:column', function(req, res){
       )
       WHERE samples IS NOT NULL
   `;
-  const SQL_NAME = `SELECT name FROM COLUMNS WHERE id = ?`;
-  sqlite.all(SQL_VALUES, [req.params.column]).then((data) =>
-    res.json({data, column: req.params.column})
+  const SQL_NAME = `SELECT name AS column FROM COLUMNS WHERE id = ?`;
+  Promise.all(
+    [
+      sqlite.all(SQL_VALUES, [req.params.column]),
+      sqlite.get(SQL_NAME, [req.params.column]),
+    ]
+  ).then(([data, {column}]) =>
+    res.json({data, column})
   ).catch((err) => res.status(500).json({'error': err}));
 });
 const columns = express().get('/columns', function(req, res){
