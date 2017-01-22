@@ -7,7 +7,7 @@
   },
   "author": "Ophir LOJKINE",
   "license": "UNLICENSED",
-  "dependencies": {
+  "devDependencies": {
     "elm": "0.18.x"
   }
 }
