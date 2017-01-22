@@ -1,0 +1,36 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Ubuntu, Nimbus Sans L, sans;
+  background: #7FDBFF;
+  color:  #001f3f;
+}
+
+h1 {
+  text-align: center;
+  margin: 40px auto;
+}
+
+select {
+  width: 300px;
+  background: #7FDBFF;
+  color:  #001f3f;
+  border: 2px solid  #001f3f;
+}
+
+table {
+  margin: 20px auto;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid grey;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #001f3f;
+  color:  #7FDBFF;
+}
+
+th:first-child {
+  width: 800px;
+}
