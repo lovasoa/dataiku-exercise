@@ -38,7 +38,7 @@ init =
     { appName = "Visualize Census"
     , dimension = ChooseDimension.initialModel
     , data = DisplayData.initialModel
-    , error = Nothing
+    , error = Just "Loading..."
     }
         ! [ GetDimensions.get ReceiveDimensions Error ]
 
@@ -49,6 +49,7 @@ init =
 
 type Msg
     = ChooseDimensionMsg ChooseDimension.Msg
+    | SetDimension ChooseDimension.Value
     | DataMsg DisplayData.Msg
     | ReceiveDimensions ChooseDimension.Model
     | Error String
@@ -62,21 +63,25 @@ update msg model =
                 | dimension = ChooseDimension.update msg model.dimension
                 , error = Nothing
             }
-                ! case msg of
-                    ChooseDimension.Choose (Just { id, value }) ->
-                        [ GetData.get DataMsg Error id ]
+                ! []
 
-                    _ ->
-                        []
+        SetDimension dimension ->
+            { model
+                | dimension =
+                    ChooseDimension.update
+                        (ChooseDimension.Choose <| Just dimension)
+                        model.dimension
+                , error = Just "Loading..."
+            }
+                ! [ GetData.get DataMsg Error dimension.id ]
 
         DataMsg msg ->
-            { model | data = DisplayData.update msg model.data } ! []
+            { model | data = DisplayData.update msg model.data, error = Nothing } ! []
 
         ReceiveDimensions dimension ->
-            { model | dimension = dimension } ! []
+            { model | dimension = dimension, error = Nothing } ! []
 
         Error err ->
-            -- TODO
             { model | error = Just err } ! []
 
 
@@ -89,7 +94,9 @@ view model =
     div []
         [ h1 [] [ text model.appName ]
         , pre [ hidden (model.error == Nothing) ] [ text <| Maybe.withDefault "" model.error ]
-        , Html.map ChooseDimensionMsg (ChooseDimension.view model.dimension)
+        , ChooseDimension.viewWithTranslator
+            { onInternalMessage = ChooseDimensionMsg, onChangeDimension = SetDimension }
+            model.dimension
         , Html.map DataMsg (DisplayData.view model.data)
         ]
 

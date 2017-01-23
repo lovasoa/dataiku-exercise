@@ -5,8 +5,11 @@ module ChooseDimension
         , Value
         , initialModel
         , Msg(Choose, SetList)
+        , Translator
+        , translate
         , update
         , view
+        , viewWithTranslator
         )
 
 import Html exposing (Html, label, select, option, div, text)
@@ -63,6 +66,24 @@ update msg model =
             { model | possible = list }
 
 
+{-| Translate messages to another (parent) messaging type
+-}
+type alias Translator msg =
+    { onInternalMessage : Msg -> msg
+    , onChangeDimension : Value -> msg
+    }
+
+
+translate : Translator msg -> Msg -> msg
+translate { onInternalMessage, onChangeDimension } msg =
+    case msg of
+        Choose (Just name) ->
+            onChangeDimension name
+
+        _ ->
+            onInternalMessage msg
+
+
 
 -- VIEW
 
@@ -79,6 +100,11 @@ getValue values str =
                     |> List.head
             )
         |> Choose
+
+
+viewWithTranslator : Translator msg -> Model -> Html msg
+viewWithTranslator translator model =
+    Html.map (translate translator) (view model)
 
 
 view : Model -> Html Msg

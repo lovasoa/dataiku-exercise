@@ -109,19 +109,17 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "results" ]
-        [ case model.dimensionName of
-            Nothing ->
-                text "Nothing selected"
+    case model.dimensionName of
+        Nothing ->
+            text "Nothing selected"
 
-            Just name ->
-                viewWithName name model
-        ]
+        Just name ->
+            viewWithName name model
 
 
 viewWithName : String -> Model -> Html Msg
 viewWithName name model =
-    div []
+    div [ class "results" ]
         [ Chart.pie (List.map pieData model.values)
             |> Chart.title name
             |> Chart.colors chartColors
