@@ -11,6 +11,7 @@ module DisplayData
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (..)
 import Table
+import Chart
 
 
 main =
@@ -48,7 +49,7 @@ testModel : Model
 testModel =
     { initialModel
         | dimensionName = Just "variable"
-        , values = [ Value 0.123 123 "hello", Value 0 1 "world" ]
+        , values = [ Value 0.123 123 "hello", Value 0 151 "world" ]
     }
 
 
@@ -114,8 +115,43 @@ view model =
                 text "Nothing selected"
 
             Just name ->
-                Table.view
-                    (tableConfig name)
-                    model.tableState
-                    model.values
+                viewWithName name model
         ]
+
+
+viewWithName : String -> Model -> Html Msg
+viewWithName name model =
+    div []
+        [ Chart.pie (List.map pieData model.values)
+            |> Chart.title name
+            |> Chart.colors chartColors
+            |> Chart.toHtml
+        , Table.view
+            (tableConfig name)
+            model.tableState
+            model.values
+        ]
+
+
+pieData : Value -> ( Float, String )
+pieData { samples, value } =
+    ( toFloat samples, value )
+
+
+chartColors : List String
+chartColors =
+    [ "#001f3f"
+    , "#0074D9"
+    , "#7FDBFF"
+    , "#39CCCC"
+    , "#3D9970"
+    , "#2ECC40"
+    , "#01FF70"
+    , "#FFDC00"
+    , "#FF851B"
+    , "#FF4136"
+    , "#85144b"
+    , "#F012BE"
+    , "#B10DC9"
+    , "#111111"
+    ]

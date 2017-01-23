@@ -21,10 +21,13 @@ select {
   border: 2px solid  #001f3f;
 }
 
-table {
-  margin: 20px auto;
+.results {
   width: 100%;
   max-width: 500px;
+  margin: 50px auto;
+}
+table {
+  margin-top: 20px;
   border: 1px solid grey;
   border-collapse: collapse;
 }
