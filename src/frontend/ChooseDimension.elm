@@ -11,7 +11,8 @@ module ChooseDimension
 
 import Html exposing (Html, label, select, option, div, text)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, on, targetValue)
+import Json.Decode
 
 
 main =
@@ -68,7 +69,7 @@ update msg model =
 
 {-| Finds a value from its string id
 -}
-getValue : Values -> String -> Maybe Value
+getValue : Values -> String -> Msg
 getValue values str =
     String.toInt str
         |> Result.toMaybe
@@ -77,6 +78,7 @@ getValue values str =
                 List.filter (((==) id) << .id) values
                     |> List.head
             )
+        |> Choose
 
 
 view : Model -> Html Msg
@@ -84,7 +86,9 @@ view model =
     label []
         [ text "Choose a variable to analyze: "
         , select
-            [ onInput (Choose << getValue model.possible) ]
+            [ onInput <| getValue model.possible
+            , on "change" <| Json.Decode.map (getValue model.possible) targetValue
+            ]
             (viewOptions model)
         ]
 
