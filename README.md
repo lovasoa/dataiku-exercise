@@ -63,7 +63,7 @@ sudo apt install nodejs python3
 
 A launch script is provided, that creates the optimized database,
 compiles Elm files to javascript, and launches the server.
-Launch is with:
+Launch it with:
 
 ```
 npm start
