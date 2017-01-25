@@ -10,6 +10,7 @@ module DisplayData
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (..)
+import FormatNumber
 import Table
 import Chart
 
@@ -62,14 +63,14 @@ tableConfig dimensionName =
         samplesColumn =
             Table.customColumn
                 { name = "number of samples"
-                , viewData = .samples >> toString
+                , viewData = .samples >> FormatNumber.formatInt FormatNumber.frenchLocale
                 , sorter = Table.decreasingOrIncreasingBy .samples
                 }
 
         ageColumn =
             Table.customColumn
                 { name = "average age"
-                , viewData = .age >> (\x -> toFloat (round (x * 10)) / 10) >> toString
+                , viewData = .age >> FormatNumber.formatFloat FormatNumber.frenchLocale
                 , sorter = Table.increasingOrDecreasingBy .age
                 }
     in
