@@ -10,7 +10,7 @@ module DisplayData
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (..)
-import FormatNumber
+import FormatNumber exposing (formatFloat, formatInt)
 import Table
 import Chart
 
@@ -57,20 +57,24 @@ testModel =
 tableConfig : String -> Table.Config Value Msg
 tableConfig dimensionName =
     let
+        -- Use a non-breakable space to separate between thousands
+        locale =
+            { decimals = 1, thousandSeparator = "\x202F", decimalSeparator = "." }
+
         dimensionColumn =
             Table.stringColumn dimensionName .value
 
         samplesColumn =
             Table.customColumn
                 { name = "number of samples"
-                , viewData = .samples >> FormatNumber.formatInt FormatNumber.frenchLocale
+                , viewData = .samples >> formatInt locale
                 , sorter = Table.decreasingOrIncreasingBy .samples
                 }
 
         ageColumn =
             Table.customColumn
                 { name = "average age"
-                , viewData = .age >> FormatNumber.formatFloat FormatNumber.frenchLocale
+                , viewData = .age >> formatFloat locale
                 , sorter = Table.increasingOrDecreasingBy .age
                 }
     in
