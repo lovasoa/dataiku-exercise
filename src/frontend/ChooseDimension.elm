@@ -90,16 +90,21 @@ translate { onInternalMessage, onChangeDimension } msg =
 
 {-| Finds a value from its string id
 -}
-getValue : Values -> String -> Msg
-getValue values str =
-    String.toInt str
-        |> Result.toMaybe
-        |> Maybe.andThen
-            (\id ->
-                List.filter (((==) id) << .id) values
-                    |> List.head
-            )
-        |> Choose
+selectValueDecoder : Values -> Json.Decode.Decoder Msg
+selectValueDecoder values =
+    let
+        intToValue : Int -> Maybe Value
+        intToValue id =
+            List.filter (\v -> v.id == id) values |> List.head
+
+        strToValue : String -> Msg
+        strToValue =
+            String.toInt
+                >> Result.toMaybe
+                >> Maybe.andThen intToValue
+                >> Choose
+    in
+        Json.Decode.map strToValue targetValue
 
 
 viewWithTranslator : Translator msg -> Model -> Html msg
@@ -112,9 +117,7 @@ view model =
     label []
         [ text "Choose a variable to analyze: "
         , select
-            [ onInput <| getValue model.possible
-            , on "change" <| Json.Decode.map (getValue model.possible) targetValue
-            ]
+            [ on "change" (selectValueDecoder model.possible) ]
             (viewOptions model)
         ]
 
