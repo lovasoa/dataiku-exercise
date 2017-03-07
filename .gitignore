@@ -6,6 +6,8 @@ repl-temp-*
 node_modules
 npm-debug.log
 
+# Uncompressed original database (we store the compressed version)
+exercise/us-census.db
 # Backend database (it can be regenerated)
 /src/backend/census.db
 # Api documentation
